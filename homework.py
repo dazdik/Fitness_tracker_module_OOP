@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 
 
 @dataclass
@@ -44,7 +44,9 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError('В дочернем классе %s должен быть '
+                                  'переопределен метод get_spent_calories.'
+                                  % (self.__class__.__name__))
 
     def show_training_info(self) -> InfoMessage:
         return InfoMessage(
@@ -61,15 +63,16 @@ class Running(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        coeff_calorie_1: int = 18
-        coeff_calorie_2: int = 20
+        COEFF_CALORIE_1: int = 18
+        COEFF_CALORIE_2: int = 20
+        CONVERT_HOURS_IN_MIN: int = 60
 
         return (
-            (coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2)
+            (COEFF_CALORIE_1 * self.get_mean_speed() - COEFF_CALORIE_2)
             * self.weight
             / self.M_IN_KM
             * self.duration
-            * 60
+            * CONVERT_HOURS_IN_MIN
         )
 
 
@@ -85,18 +88,19 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        coeff_calorie_1: int = 0.035
-        coeff_calorie_2: int = 0.029
+        COEFF_CALORIE_1: int = 0.035
+        COEFF_CALORIE_2: int = 0.029
+        CONVERT_HOURS_IN_MIN: int = 60
 
         return (
             (
-                coeff_calorie_1 * self.weight
+                COEFF_CALORIE_1 * self.weight
                 + (self.get_mean_speed() ** 2 // self.height)
-                * coeff_calorie_2
+                * COEFF_CALORIE_2
                 * self.weight
             )
             * self.duration
-            * 60
+            * CONVERT_HOURS_IN_MIN
         )
 
 
@@ -125,10 +129,10 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        coeff_calorie_1: int = 1.1
-        coeff_calorie_2: int = 2
-        return ((self.get_mean_speed() + coeff_calorie_1)
-                * coeff_calorie_2 * self.weight)
+        COEFF_CALORIE_1: int = 1.1
+        COEFF_CALORIE_2: int = 2
+        return ((self.get_mean_speed() + COEFF_CALORIE_1)
+                * COEFF_CALORIE_2 * self.weight)
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
